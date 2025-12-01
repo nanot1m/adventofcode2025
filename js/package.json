@@ -1,0 +1,30 @@
+{
+	"name": "js",
+	"version": "1.0.0",
+	"description": "",
+	"main": "scripts/solve.js",
+	"type": "module",
+	"scripts": {
+		"solve": "npx n exec 22 node scripts/solve.js",
+		"solve:watch": "npx n exec 22 node scripts/solveAndWatch.js",
+		"tpl": "node scripts/prepare.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "8.48.0",
+		"@typescript-eslint/parser": "8.48.0",
+		"@typescript-eslint/utils": "8.48.0",
+		"eslint": "9.39.1",
+		"eslint-plugin-rulesdir": "0.2.2",
+		"n": "10.2.0",
+		"ts-toolbelt": "9.6.0",
+		"tsutils": "3.21.0",
+		"typescript": "5.9.3"
+	},
+	"dependencies": {}
+}

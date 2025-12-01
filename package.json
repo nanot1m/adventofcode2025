@@ -1,0 +1,13 @@
+{
+	"name": "adventofcode2025",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"predeploy": "cd html && npm run build && cd ..",
+		"deploy": "npx gh-pages -d html/dist"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
