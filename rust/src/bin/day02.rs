@@ -14,30 +14,22 @@ fn parse_input(input: &str) -> Vec<(i64, i64)> {
     input.split(',').map(|r| parse_range(r)).collect()
 }
 
-fn is_invalid_id(id: &i64) -> bool {
-    let id_str = id.to_string();
+fn is_invalid_id_str(id_str: &str) -> bool {
     let len = id_str.len();
-    let (left, right) = id_str.split_at(len.div_ceil(2));
+    let (left, right) = id_str.split_at(len.div_ceil(2)); // ceil(len/2)
     left == right
 }
 
-fn is_invalid_id_v2(id: &i64) -> bool {
-    let id_str = id.to_string();
-    let len = id_str.len();
-    for size in 1..=(len / 2) {
-        if len % size != 0 {
-            continue;
-        }
-        let pattern = &id_str[0..size];
-        let mut repeated = String::new();
-        for _ in 0..(len / size) {
-            repeated.push_str(pattern);
-        }
-        if repeated == id_str {
-            return true;
-        }
-    }
-    false
+fn is_invalid_id_repeating(id_str: &str) -> bool {
+    let bytes = id_str.as_bytes();
+    let len = bytes.len();
+
+    (1..=(len / 2))
+        .filter(|size| len % size == 0)
+        .any(|size| {
+            let first = &bytes[..size];
+            bytes.chunks(size).all(|chunk| chunk == first)
+        })
 }
 
 fn main() {
@@ -47,19 +39,16 @@ fn main() {
         .to_string();
     let ranges = parse_input(&input);
 
-    let part1: i64 = ranges
+    let (part1, part2) = ranges
         .iter()
         .flat_map(|(start, end)| *start..=*end)
-        .filter(is_invalid_id)
-        .sum();
+        .fold((0i64, 0i64), |(p1, p2), id| {
+            let id_str = id.to_string();
+            let p1_next = if is_invalid_id_str(&id_str) { p1 + id } else { p1 };
+            let p2_next = if is_invalid_id_repeating(&id_str) { p2 + id } else { p2 };
+            (p1_next, p2_next)
+        });
 
     println!("Part 1: Total invalid IDs sum: {}", part1);
-
-    let part2: i64 = ranges
-        .iter()
-        .flat_map(|(start, end)| *start..=*end)
-        .filter(is_invalid_id_v2)
-        .sum();
-
     println!("Part 2: Total invalid IDs sum: {}", part2);
 }
