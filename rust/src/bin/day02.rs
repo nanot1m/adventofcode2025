@@ -16,7 +16,7 @@ fn parse_input(input: &str) -> Vec<(i64, i64)> {
 
 fn is_invalid_id_str(id_str: &str) -> bool {
     let len = id_str.len();
-    let (left, right) = id_str.split_at(len.div_ceil(2)); // ceil(len/2)
+    let (left, right) = id_str.split_at(len / 2);
     left == right
 }
 
@@ -33,12 +33,10 @@ fn is_invalid_id_repeating(id_str: &str) -> bool {
 }
 
 fn main() {
-    let input = read_input(2)
-        .expect("Failed to read input for day 2")
-        .trim_end()
-        .to_string();
+    let input = read_input(2).unwrap();
+    let now = std::time::Instant::now();
     let ranges = parse_input(&input);
-
+    
     let (part1, part2) = ranges
         .iter()
         .flat_map(|(start, end)| *start..=*end)
@@ -51,4 +49,6 @@ fn main() {
 
     println!("Part 1: Total invalid IDs sum: {}", part1);
     println!("Part 2: Total invalid IDs sum: {}", part2);
+    println!("Elapsed time: {:?}", now.elapsed());
 }
+
