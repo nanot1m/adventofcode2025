@@ -5,20 +5,22 @@ use std::path::PathBuf;
 /// Read the full input file for the given day (e.g. day=1 -> "../input/day1.input.txt").
 /// Returns the file contents as a String (with trailing newline trimmed).
 pub fn read_input(day: usize) -> io::Result<String> {
-  let path = PathBuf::from(format!("../input/day{}.input.txt", day));
-  let mut s = fs::read_to_string(path)?;
-  // Trim a single trailing newline (common for puzzle inputs) but preserve other whitespace.
-  if s.ends_with('\n') {
-    s.pop();
-    if s.ends_with('\r') { s.pop(); } // handle CRLF
-  }
-  Ok(s)
+    let path = PathBuf::from(format!("../input/day{}.input.txt", day));
+    let mut s = fs::read_to_string(path)?;
+    // Trim a single trailing newline (common for puzzle inputs) but preserve other whitespace.
+    if s.ends_with('\n') {
+        s.pop();
+        if s.ends_with('\r') {
+            s.pop();
+        } // handle CRLF
+    }
+    Ok(s)
 }
 
 /// Convenience to get the input as an iterator of non-owning lines.
 pub fn read_input_lines(day: usize) -> io::Result<Vec<String>> {
-  let s = read_input(day)?;
-  Ok(s.lines().map(|l| l.to_string()).collect())
+    let s = read_input(day)?;
+    Ok(s.lines().map(|l| l.to_string()).collect())
 }
 
 /// Parse input string into a 2D grid of characters.
@@ -84,9 +86,14 @@ where
 /// ```
 pub fn iterate_neighbors_8<T>(pos: (usize, usize), grid: &[Vec<T>]) -> Vec<(&T, (usize, usize))> {
     const NEIGHBORS: [(isize, isize); 8] = [
-        (-1, -1), (-1, 0), (-1, 1),
-        (0, -1),           (0, 1),
-        (1, -1),  (1, 0),  (1, 1),
+        (-1, -1),
+        (-1, 0),
+        (-1, 1),
+        (0, -1),
+        (0, 1),
+        (1, -1),
+        (1, 0),
+        (1, 1),
     ];
 
     let (x, y) = pos;
@@ -106,4 +113,35 @@ pub fn iterate_neighbors_8<T>(pos: (usize, usize), grid: &[Vec<T>]) -> Vec<(&T, 
     }
 
     result
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Point {
+    pub x: i64,
+    pub y: i64,
+}
+
+/// Iterate over all positions and values in a 2D grid.
+pub fn iterate_grid(grid: &[Vec<char>]) -> impl Iterator<Item = (Point, char)> + '_ {
+    grid.iter().enumerate().flat_map(|(y, row)| {
+        row.iter().enumerate().map(move |(x, &cell)| {
+            (
+                Point {
+                    x: x as i64,
+                    y: y as i64,
+                },
+                cell,
+            )
+        })
+    })
+}
+
+/// Get a reference to the value at a given Point in the grid, if it exists.
+pub fn get_grid_point<T>(grid: &[Vec<T>], point: Point) -> Option<&T> {
+    if (point.y < 0) || (point.x < 0) {
+        return None;
+    }
+    let x = point.x as usize;
+    let y = point.y as usize;
+    grid.get(y).and_then(|row| row.get(x))
 }
